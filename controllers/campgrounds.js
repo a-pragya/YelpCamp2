@@ -24,6 +24,7 @@ module.exports.showCampground = async (req, res) => {
         req.flash('error','Cannot find that campground');
         return res.redirect('/campgrounds');
     }
+    
     res.render('campground/show', { camp })
 }
 
@@ -49,7 +50,7 @@ module.exports.editCampground = async (req, res) => {
         }
         await camp.updateOne({ $pull: { images: {filename :{ $in: req.body.deleteImages}}}})
     }
-    req.flash('success','Successfully updated campground!')
+    req.flash('success','Successfully updated campground32!')
     res.redirect(`/campgrounds/${req.params.id}`)
 }
 

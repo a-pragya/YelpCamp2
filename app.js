@@ -14,7 +14,7 @@ const flash= require('connect-flash')
 const mongoSanitize = require('express-mongo-sanitize');
 
 const ExpressError = require('./utils/ExpressError')
-// const catchAsync = require('./utils/catchAsync')
+//const catchAsync = require('./utils/catchAsync')
 const { campgroundSchema } = require('./schemas')
 const { reviewSchema } = require('./schemas')
 
@@ -96,6 +96,7 @@ app.use((req,res, next) =>{
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
+    res.locals.error2 = req.flash('error2')
     next();
 })
 
