@@ -5,6 +5,7 @@ if(process.env.NODE_ENV !== "production"){
 const express = require('express')
 const mongoose = require('mongoose')
 const session = require('express-session')
+const MongoDBStore = require("connect-mongo");
 const Campground = require('./models/campground')
 const Review = require('./models/review')
 const methodOverride = require('method-override')
@@ -25,7 +26,10 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local')
 const User = require('./models/user')
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+
+//dbURL='mongodb://localhost:27017/yelp-camp'
+const dbURL=process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp'
+mongoose.connect(dbURL, {
     useNewUrlParser: true,
     //useCreateIndex: true,
     useUnifiedTopology: true
@@ -36,6 +40,7 @@ db.on("error", console.log.bind(console, "connection error:"))
 db.once("open", () => {
     console.log("Database connected ")
 })
+
 
 
 const app = express()
@@ -49,9 +54,21 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_METHOD'))
 app.use(express.static(path.join(__dirname, 'public')))
 
+// const store = new MongoDBStore({
+//     url: dbURL,
+//     secret,
+//     touchAfter: 24 * 60 * 60
+// });
+// store.on("error", function (e) {
+//     console.log("SESSION STORE ERROR", e)
+// })
+
+const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
+
 const sessionConfig = {
+    store: MongoDBStore.create({ mongoUrl: dbURL }),
     name:'session',
-    secret: 'thisshouldbeabettersecret!',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie:{
